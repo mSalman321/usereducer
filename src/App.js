@@ -1,8 +1,10 @@
 import './App.css';
 import React,{useState, useReducer} from 'react'
 import Todo from './Todo'
+import { v4 as uuidv4 } from 'uuid';
 
-const ACTIONS = {
+
+export const ACTIONS = {
   ADD_TODO:'add-todo',
   TOGGLE_TODO:'toggle-todo',
     
@@ -20,12 +22,14 @@ function reducer(todos, action) {
           return {...todo,complete:!todo.complete}
         }
       })
+    case ACTIONS.DELETE:
+      return todos.filter(todo =>todo.id !== action.payload.id)
   }
 
 }
 
 function newTodo(name) {
-  return {id:Date.now(), name:name, complete:false}
+  return {id:uuidv4(), name:name, complete:false}
 }
 
 function App() {
@@ -48,8 +52,11 @@ function App() {
         <form onSubmit={handleSubmit}>
           <input type="text" value={name} onChange={e=>setName(e.target.value)}/>
         </form>
+
+
         {
           todos.map(todo=>{
+            console.log(todo.id)
             return <Todo key={todo.id} todo={todo} dispatch={dispatch}/>
           })
         }
